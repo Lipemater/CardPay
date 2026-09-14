@@ -1,4 +1,4 @@
-namespace Domain.Constants.PaymentRules;
+namespace Domain.Constants;
 
 public class PaymentRules
 {

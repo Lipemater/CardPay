@@ -1,21 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using Contracts.Responses.InstallmentsResponse;
-using Domain.Constants.PaymentRules;
-using System.Linq;
+using Contracts.Responses;
+using Domain.Constants;
 
-namespace Controllers.InstallmentControllers;
+namespace Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class InstallmentsController : ControllerBase
 {
     [HttpGet]
-    public ActionResult<InstallmentsResponse> GetInstallments()
+    public ActionResult<AvaliableInstallmentsResponse> GetInstallments()
     {
         var installments = Enumerable.Range(PaymentRules.MinimumInstallments, ((PaymentRules.MaximumInstallments - PaymentRules.MinimumInstallments) + 1)).ToList();
 
 
-        var response = new InstallmentsResponse()
+        var response = new AvaliableInstallmentsResponse()
         {
             Installments = installments
         };

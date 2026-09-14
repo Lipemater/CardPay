@@ -1,3 +1,8 @@
+using Repositories.InMemory;
+using Repositories.interfaces;
+using Services.Implementations;
+using Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<ICardBrandDetector, CardBrandDetector>();
+builder.Services.AddSingleton<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
+
 
 var app = builder.Build();
 
@@ -14,7 +26,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+if (builder.Configuration["urls"]?.Contains("https://", StringComparison.OrdinalIgnoreCase) == true)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
