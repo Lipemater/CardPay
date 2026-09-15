@@ -52,4 +52,38 @@ public class PaymentsController : ControllerBase
         }
 
     }
+
+    [HttpPost("{id}/confirm")]
+    public ActionResult<ConfirmPaymentResponse> ConfirmPayment(Guid id)
+    {
+        try
+        {
+            var payment = _paymentService.ConfirmPayment(id);
+
+            var response = new ConfirmPaymentResponse
+            {
+                Message = "Payment confirmed.",
+                Id = payment.Id,
+                ConfirmedAt = payment.ConfirmedAt!.Value
+            };
+
+            return Ok(response);
+        }
+        catch (PaymentNotFoundException error)
+        {
+            var response = new ErrorResponse
+            {
+                Message = error.Message
+            };
+            return NotFound(response);
+        }
+        catch (PaymentValidationException error)
+        {
+            var response = new ErrorResponse
+            {
+                Message = error.Message
+            };
+            return BadRequest(response);
+        }
+    }
 }

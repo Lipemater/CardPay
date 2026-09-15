@@ -18,6 +18,8 @@ public class PaymentService : IPaymentService
         _cardBrandDetector = cardBrandDetector;
     }
 
+
+
     public Payment CreatePayment(string cardNumber, int installments, int amountInCents)
     {
         if (!(installments >= PaymentRules.MinimumInstallments && installments <= PaymentRules.MaximumInstallments))
@@ -55,6 +57,41 @@ public class PaymentService : IPaymentService
         return payment;
 
     }
+
+    public Payment ConfirmPayment(Guid id)
+    {
+        var payment = _paymentRepository.GetPaymentById(id);
+        if (payment == null)
+        {
+            throw new PaymentNotFoundException("Payment not found or already confirmed.");
+        }
+
+        var now = DateTimeOffset.UtcNow;
+        var timePassed = now - payment.CreatedAt;
+        if (timePassed >= TimeSpan.FromMinutes(1))
+        {
+            throw new PaymentValidationException("Payment confirmation expired. The payment must be confirmed within 1 minute.");
+        }
+
+
+        var paymentRemoved = _paymentRepository.RemovePending(id);
+        if (paymentRemoved == null)
+        {
+            throw new PaymentNotFoundException("Payment could not be removed from pending payments because it was not found or has already been processed.");
+        }
+
+
+        paymentRemoved.ConfirmedAt = now;
+        _paymentRepository.AddConfirmed(payment);
+        return payment;
+    }
+
+
+
+
+
+
+
 
 
 
