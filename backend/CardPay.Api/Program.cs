@@ -2,6 +2,7 @@ using Repositories.InMemory;
 using Repositories.interfaces;
 using Services.Implementations;
 using Services.Interfaces;
+using YamlDotNet.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUi(settings =>
+    {
+        settings.Path = "/swagger";
+        settings.DocumentPath = "/openapi/v1.json";
+    });
 }
 
 if (builder.Configuration["urls"]?.Contains("https://", StringComparison.OrdinalIgnoreCase) == true)
