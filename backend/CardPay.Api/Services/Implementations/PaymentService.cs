@@ -86,6 +86,8 @@ public class PaymentService : IPaymentService
         return payment;
     }
 
+    public List<Payment> GetConfirmedPayments() => _paymentRepository.GetConfirmedPayments();
+
 
 
 

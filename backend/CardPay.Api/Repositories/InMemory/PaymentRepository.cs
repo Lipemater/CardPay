@@ -19,4 +19,6 @@ public class PaymentRepository : IPaymentRepository
     public Payment? RemovePending(Guid id) => _pendingPayments.TryRemove(id, out Payment? payment) ? payment : null;
 
     public void AddConfirmed(Payment payment) => _confirmedPayments[payment.Id] = payment;
+
+    public List<Payment> GetConfirmedPayments() => _confirmedPayments.Values.ToList();
 }

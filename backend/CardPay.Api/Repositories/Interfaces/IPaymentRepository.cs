@@ -9,5 +9,5 @@ public interface IPaymentRepository
     public Payment? GetPaymentById(Guid id);
     public Payment? RemovePending(Guid id);
     public void AddConfirmed(Payment payment);
-
+    public List<Payment> GetConfirmedPayments();
 }

@@ -19,6 +19,35 @@ public class PaymentsController : ControllerBase
     }
 
 
+    [HttpGet]
+    public ActionResult<ConfirmedPaymentsResponse> ConfirmedPayments()
+    {
+        var payments = _paymentService.GetConfirmedPayments();
+
+        var confirmedPayment = payments.Select(payment => new ConfirmedPaymentResponse
+        {
+            Id = payment.Id,
+            CardBrand = payment.CardBrand.ToString(),
+            AmountInCents = payment.AmountInCents,
+            Installments = payment.Installments,
+            ConfirmedAt = payment.ConfirmedAt!.Value,
+            InstallmentDetails = payment.InstallmentsDetails.Select(installment => new InstallmentDetailResponse
+            {
+                InstallmentNumber = installment.InstallmentNumber,
+                AmountInCents = installment.AmountInCents
+            }).ToList()
+        }).ToList();
+
+        var response = new ConfirmedPaymentsResponse
+        {
+            Payments = confirmedPayment
+        };
+
+        return Ok(response);
+
+    }
+
+
     [HttpPost]
     public ActionResult<CreatePaymentResponse> CreatePayment(CreatePaymentRequest paymentRequest)
     {

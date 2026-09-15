@@ -6,4 +6,5 @@ public interface IPaymentService
 {
     public Payment CreatePayment(string cardNumber, int installments, int amountInCents);
     public Payment ConfirmPayment(Guid id);
+    public List<Payment> GetConfirmedPayments();
 }
